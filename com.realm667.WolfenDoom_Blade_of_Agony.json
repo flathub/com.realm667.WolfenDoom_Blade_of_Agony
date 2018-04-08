@@ -12,7 +12,7 @@
 		"--share=ipc",
 		"--socket=pulseaudio",
 		"--env=DOOMWADDIR=/app/share/games/doom",
-		"--persist=xdg-config/gzdoom"
+		"--persist=.config/gzdoom"
 	],
 	"cleanup": [
 		"/include",
