@@ -93,7 +93,7 @@ modules:
     - install -Dm 644 gzdoom.sf2 /app/share/sounds/sf2/gzdoom.sf2
   - type: script
     commands:
-    - gzdoom +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 $@
+    - gzdoom -file boa_c2.pk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 $@
     dest-filename: gzdoom.sh
   post-install:
   - install -D gzdoom.sh /app/bin/gzdoom.sh
