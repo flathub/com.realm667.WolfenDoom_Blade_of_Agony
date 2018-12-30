@@ -107,9 +107,3 @@ modules:
   build-commands:
   - install -Dm 644 freedoom2.wad /app/share/games/doom
 
-- name: libsndfile # remove it as soon as https://gitlab.com/freedesktop-sdk/freedesktop-sdk/merge_requests/573 has been merged
-  no-autogen: true
-  sources:
-  - type: archive
-    url: http://www.mega-nerd.com/libsndfile/files/libsndfile-1.0.28.tar.gz
-    sha256: 1ff33929f042fa333aed1e8923aa628c3ee9e1eb85512686c55092d1e5a9dfa9
