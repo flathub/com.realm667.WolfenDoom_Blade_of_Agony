@@ -5,7 +5,7 @@ runtime-version: '18.08'
 command: gzdoom.sh
 rename-icon: m_doom
 finish-args:
-- --device=dri
+- --device=all
 - --socket=wayland
 - --socket=x11
 - --share=ipc
