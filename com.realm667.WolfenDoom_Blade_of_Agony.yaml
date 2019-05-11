@@ -1,7 +1,7 @@
 app-id: com.realm667.WolfenDoom_Blade_of_Agony
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: '18.08'
+runtime-version: "18.08"
 command: gzdoom.sh
 rename-icon: m_doom
 finish-args:
@@ -81,12 +81,13 @@ modules:
   config-opts:
   - -DCMAKE_BUILD_TYPE=RelWithDebInfo
   - -DSEND_ANON_STATS=OFF
+  - -DCMAKE_CXX_FLAGS="-msse3" # Required when targeting 32-bit x86
   sources:
   - type: archive
-    url: https://github.com/coelckers/gzdoom/archive/g3.7.2.tar.gz
-    sha256: 5fb57c83b733d77688b5809b3bd64ab87f0976f4e81d3bbac0ea0785a24646cc
+    url: https://github.com/coelckers/gzdoom/archive/g4.1.1.tar.gz
+    sha256: 50ce34b48518fb8715d6e346ff3ac8d08fd24b34e764be88335810fa592fb84a
   - type: file
-    url: https://github.com/coelckers/gzdoom/raw/g3.7.2/soundfont/gzdoom.sf2
+    url: https://github.com/coelckers/gzdoom/raw/g4.1.1/soundfont/gzdoom.sf2
     sha256: fca3e514b635a21789d4224e84865d2954a2a914d46b64aa8219ddb565c44869
   - type: shell
     commands:
