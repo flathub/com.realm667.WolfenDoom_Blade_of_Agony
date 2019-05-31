@@ -100,16 +100,7 @@ modules:
     - install -Dm 644 gzdoom.sf2 /app/share/sounds/sf2/gzdoom.sf2
   - type: script
     commands:
-    - gzdoom -file boa_c2.pk3 -file boa_c2_fix_37.pk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 $@
+    - gzdoom -iwad boa_c2.pk3 -file boa_c2_fix_37.pk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 $@
     dest-filename: gzdoom.sh
   post-install:
   - install -D gzdoom.sh /app/bin/gzdoom.sh
-
-- name: freedoom2
-  buildsystem: simple
-  sources:
-  - type: archive
-    url: https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip
-    sha256: 28a5eafbb1285b78937bd408fcdd8f25f915432340eee79da692eae83bce5e8a
-  build-commands:
-  - install -Dm 644 freedoom2.wad /app/share/games/doom
