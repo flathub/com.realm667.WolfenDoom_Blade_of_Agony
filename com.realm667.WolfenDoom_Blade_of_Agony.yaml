@@ -44,6 +44,12 @@ modules:
     commands:
     - 7z a -tzip -mmt=on -mm='Deflate' -mx=9 -ssc -xr@'tools/7zExcludeList.txt' -x@'tools/7zExcludeListDir.txt'
       boa_c2.pk3 *
+  # Fixes the bug described in <https://forum.zdoom.org/viewtopic.php?f=7&t=63181>
+  # This should be removed once this Flatpak upgrades to Chapter 3 (when it's released)
+  - type: file
+    url: https://forum.zdoom.org/download/file.php?id=34210
+    sha256: 1c473bbd09bf06d2581c94e6ae7a2b322756fa797cb4c2c1d0ba78c8b1d5efa8
+    dest-filename: boa_c2_fix_37.pk3
   - type: file
     url: https://raw.githubusercontent.com/Realm667/WolfenDoom/5ff5c4d416b4735e9355eca3130e3c2fd64078bc/dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop
     sha256: 57b1dbf9f9b7d26c6546dfd8fb956bbcff5287d737a9e9f6630b04271332b266
@@ -58,6 +64,7 @@ modules:
     path: m_doomxl-128x128.png
   build-commands:
   - install -Dm 644 boa_c2.pk3 -t /app/share/games/doom
+  - install -Dm 644 boa_c2_fix_37.pk3 -t /app/share/games/doom
   - desktop-file-edit --set-key=Exec --set-value=gzdoom.sh com.realm667.WolfenDoom_Blade_of_Agony.desktop
   - desktop-file-edit --set-key=StartupWMClass --set-value=gzdoom com.realm667.WolfenDoom_Blade_of_Agony.desktop
   - install -Dm 644 com.realm667.WolfenDoom_Blade_of_Agony.desktop -t /app/share/applications
@@ -93,16 +100,7 @@ modules:
     - install -Dm 644 gzdoom.sf2 /app/share/sounds/sf2/gzdoom.sf2
   - type: script
     commands:
-    - gzdoom -file boa_c2.pk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 $@
+    - gzdoom -iwad boa_c2.pk3 -file boa_c2_fix_37.pk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 $@
     dest-filename: gzdoom.sh
   post-install:
   - install -D gzdoom.sh /app/bin/gzdoom.sh
-
-- name: freedoom2
-  buildsystem: simple
-  sources:
-  - type: archive
-    url: https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip
-    sha256: 28a5eafbb1285b78937bd408fcdd8f25f915432340eee79da692eae83bce5e8a
-  build-commands:
-  - install -Dm 644 freedoom2.wad /app/share/games/doom
