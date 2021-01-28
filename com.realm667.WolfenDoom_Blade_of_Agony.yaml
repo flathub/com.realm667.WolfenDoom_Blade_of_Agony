@@ -5,13 +5,12 @@ runtime-version: '20.08'
 command: gzdoom.sh
 rename-icon: m_doom
 finish-args:
-- --device=all
+- --device=all # includes dri
 - --socket=wayland
 - --socket=x11
 - --share=ipc
 - --socket=pulseaudio
 - --env=DOOMWADDIR=/app/share/games/doom
-- --env=KDE_FULL_SESSION= # without this, gzdoom tries to use kdialog for error messages when using KDE
 - --persist=.config/gzdoom
 cleanup:
 - /include
@@ -38,9 +37,9 @@ modules:
 - name: wolfenstein
   buildsystem: simple
   sources:
-  - type: git
-    url: https://github.com/Realm667/WolfenDoom
-    commit: e875fa16001858515ce55862596925b439cddb5f
+  - type: archive
+    url: https://github.com/Realm667/WolfenDoom/archive/01a35f7e99b20d7ba27ad81bdc42b08b09974bac.zip
+    sha256: 7290b8ea542a158af5c924bfdbf4addaffa9cb0f64e389092cb0b98c538cb020
   - type: file
     path: m_doomxl-48x48.png # taken from https://github.com/Realm667/WolfenDoom/blob/master/graphics/general/m_doom.png
   - type: file
@@ -59,15 +58,7 @@ modules:
   - install -Dm 644 m_doomxl-64x64.png /app/share/icons/hicolor/64x64/apps/m_doom.png
   - install -Dm 644 m_doomxl-128x128.png /app/share/icons/hicolor/128x128/apps/m_doom.png
 
-- name: fluidsynth # build dependency of gzdoom
-  buildsystem: cmake-ninja
-  config-opts:
-  - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-  - -DLIB_SUFFIX=
-  sources:
-  - type: archive
-    url: https://github.com/FluidSynth/fluidsynth/archive/v2.1.6.tar.gz
-    sha256: 328fc290b5358544d8dea573f81cb1e97806bdf49e8507db067621242f3f0b8a
+- shared-modules/linux-audio/fluidsynth2.json # build dependency of gzdoom
 
 - name: zmusic # build dependency of gzdoom
   buildsystem: cmake-ninja
@@ -83,10 +74,13 @@ modules:
   config-opts:
   - -DCMAKE_BUILD_TYPE=RelWithDebInfo
   sources:
-  - type: git # use git because wadsrc_widescreen/static is a git module which is not included in the archive
-    url: https://github.com/coelckers/gzdoom # latest gzdoom needed to have disableskyboxao
-    #tag: g4.5.0
-    #commit: 3037c08840f209f9f6b6d7e6c2c69632472a5d54
+  - type: archive # use git because wadsrc_widescreen/static is a git module which is not included in the archive
+    url: https://github.com/coelckers/gzdoom/archive/0036f7fadea94459a58d8ad3401341d5a888f151.zip # latest gzdoom needed to have disableskyboxao
+    sha256: 276f542f0b57513ab5c9e33c001cacc6107f92963ba04a5fb9673faaaaff9e54
+  - type: archive
+    url: https://github.com/nashmuhandes/WidePix/archive/master.zip
+    sha256: 7f273af8ad92cb8a828b6948c81d8060bba2e0f2bdd857d43b2b09801b7d18b0
+    dest: wadsrc_widescreen/static
   - type: script
     commands:
     - gzdoom -iwad boa.ipk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 -file lights.pk3 brightmaps.pk3 game_widescreen_gfx.pk3 "$@"
