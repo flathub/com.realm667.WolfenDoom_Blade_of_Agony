@@ -1,7 +1,7 @@
 app-id: com.realm667.WolfenDoom_Blade_of_Agony
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: '18.08' # gzdoom 3.2 doesn't compile with the 20.08 runtime
+runtime-version: '20.08'
 command: gzdoom.sh
 rename-icon: m_doom
 finish-args:
@@ -11,6 +11,7 @@ finish-args:
 - --share=ipc
 - --socket=pulseaudio
 - --env=DOOMWADDIR=/app/share/games/doom
+- --env=KDE_FULL_SESSION= # without this, gzdoom tries to use kdialog for error messages when using KDE
 - --persist=.config/gzdoom
 cleanup:
 - /include
@@ -18,8 +19,9 @@ cleanup:
 - /lib/*.la
 - /lib/pkgconfig
 - /share/man
+- /share/doc
 modules:
-- name: p7zip # required to assemble the boa.pk3
+- name: p7zip # required to assemble boa.ipk3
   no-autogen: true
   make-args:
   - 7z
@@ -33,23 +35,12 @@ modules:
     commands:
     - sed -i 's|/usr/local|/app|g' makefile.common
 
-- name: wolfendoom
+- name: wolfenstein
   buildsystem: simple
   sources:
-  - type: archive
-    url: https://github.com/Realm667/WolfenDoom/archive/c2-release.tar.gz
-    sha256: c0e09acc18cf845188ca2796ded644fd38842c83275930efd60b63876d1f66f2
-  - type: shell
-    # 7z command taken from build.sh
-    commands:
-    - 7z a -tzip -mmt=on -mm='Deflate' -mx=9 -ssc -xr@'tools/7zExcludeList.txt' -x@'tools/7zExcludeListDir.txt'
-      boa_c2.pk3 *
-  - type: file
-    url: https://raw.githubusercontent.com/Realm667/WolfenDoom/5ff5c4d416b4735e9355eca3130e3c2fd64078bc/dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop
-    sha256: 57b1dbf9f9b7d26c6546dfd8fb956bbcff5287d737a9e9f6630b04271332b266
-  - type: file
-    url: https://raw.githubusercontent.com/Realm667/WolfenDoom/5ff5c4d416b4735e9355eca3130e3c2fd64078bc/dist/com.realm667.WolfenDoom_Blade_of_Agony.appdata.xml
-    sha256: b6c873fc446c00622242ea8e5e50e6b6f3f4e3e18f8ba1bd33f1f901a477f538
+  - type: git
+    url: https://github.com/Realm667/WolfenDoom
+    commit: e875fa16001858515ce55862596925b439cddb5f
   - type: file
     path: m_doomxl-48x48.png # taken from https://github.com/Realm667/WolfenDoom/blob/master/graphics/general/m_doom.png
   - type: file
@@ -57,24 +48,17 @@ modules:
   - type: file
     path: m_doomxl-128x128.png
   build-commands:
-  - install -Dm 644 boa_c2.pk3 -t /app/share/games/doom
-  - desktop-file-edit --set-key=Exec --set-value=gzdoom.sh com.realm667.WolfenDoom_Blade_of_Agony.desktop
-  - desktop-file-edit --set-key=StartupWMClass --set-value=gzdoom com.realm667.WolfenDoom_Blade_of_Agony.desktop
-  - install -Dm 644 com.realm667.WolfenDoom_Blade_of_Agony.desktop -t /app/share/applications
-  - install -Dm 644 com.realm667.WolfenDoom_Blade_of_Agony.appdata.xml -t /app/share/appdata
+  # 7z command taken from https://github.com/Realm667/WolfenDoom/blob/master/build.sh
+  - 7z a -tzip -mmt=on -mm='LZMA' -mx=9 -ssc -xr@'tools/7za/7zExcludeList.txt' -x@'tools/7za/7zExcludeListDir.txt' boa.ipk3 *
+  - install -Dm 644 boa.ipk3 -t /app/share/games/doom
+  - desktop-file-edit --set-key=Exec --set-value=gzdoom.sh dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop
+  - desktop-file-edit --set-key=StartupWMClass --set-value=gzdoom dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop
+  - install -Dm 644 dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop /app/share/applications/com.realm667.WolfenDoom_Blade_of_Agony.desktop
+  - install -Dm 644 dist/com.realm667.WolfenDoom_Blade_of_Agony.appdata.xml /app/share/appdata/com.realm667.WolfenDoom_Blade_of_Agony.appdata.xml
   - install -Dm 644 m_doomxl-48x48.png /app/share/icons/hicolor/48x48/apps/m_doom.png
   - install -Dm 644 m_doomxl-64x64.png /app/share/icons/hicolor/64x64/apps/m_doom.png
   - install -Dm 644 m_doomxl-128x128.png /app/share/icons/hicolor/128x128/apps/m_doom.png
 
-- name: freedoom2
-  buildsystem: simple
-  sources:
-  - type: archive
-    url: https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip
-    sha256: 28a5eafbb1285b78937bd408fcdd8f25f915432340eee79da692eae83bce5e8a
-  build-commands:
-  - install -Dm 644 freedoom2.wad /app/share/games/doom
-  
 - name: fluidsynth # build dependency of gzdoom
   buildsystem: cmake-ninja
   config-opts:
@@ -85,21 +69,28 @@ modules:
     url: https://github.com/FluidSynth/fluidsynth/archive/v2.1.6.tar.gz
     sha256: 328fc290b5358544d8dea573f81cb1e97806bdf49e8507db067621242f3f0b8a
 
+- name: zmusic # build dependency of gzdoom
+  buildsystem: cmake-ninja
+  config-opts:
+  - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  sources:
+  - type: archive
+    url: https://github.com/coelckers/ZMusic/archive/1.1.4.tar.gz
+    sha256: 29a18a6a8d0db4978a9d5badbbd612be2337d64ef0d768e944ea70f526eae285
+    
 - name: gzdoom
   buildsystem: cmake-ninja
   config-opts:
   - -DCMAKE_BUILD_TYPE=RelWithDebInfo
   sources:
-  # WolfenDoom Chapter 2 requires gzdoom 3.2: https://www.realm667.com/index.php/en/forum-board/wolfendoom-blade-of-agony/1269-crashing-when-loading#7413
-  - type: archive
-    url: https://github.com/coelckers/gzdoom/archive/g3.2.5.tar.gz
-    sha256: e9cf0aa5b7ee0b165532dee55e4965f6aabf1acadb79f7372f8e362540206748
-  - type: shell
-    commands:
-    - install -Dm 644 soundfont/gzdoom.sf2 /app/share/sounds/sf2/gzdoom.sf2
+  - type: git # use git because wadsrc_widescreen/static is a git module which is not included in the archive
+    url: https://github.com/coelckers/gzdoom # latest gzdoom needed to have disableskyboxao
+    #tag: g4.5.0
+    #commit: 3037c08840f209f9f6b6d7e6c2c69632472a5d54
   - type: script
     commands:
-    - gzdoom file boa_c2.pk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 -file lights.pk3 brightmaps.pk3 "$@"
+    - gzdoom -iwad boa.ipk3 +fluid_patchset /app/share/sounds/sf2/gzdoom.sf2 -file lights.pk3 brightmaps.pk3 game_widescreen_gfx.pk3 "$@"
     dest-filename: gzdoom.sh
-  post-install:
+  build-commands:
+  - install -Dm 644 soundfont/gzdoom.sf2 /app/share/sounds/sf2/gzdoom.sf2
   - install -D gzdoom.sh /app/bin/gzdoom.sh
