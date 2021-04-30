@@ -1,3 +1,4 @@
 {
-    "skip-arches": ["arm", "aarch64"]
+  "end-of-life": "The application has been renamed to com.realm667.Wolfenstein_Blade_of_Agony",
+  "end-of-life-rebase": "com.realm667.Wolfenstein_Blade_of_Agony"
 }
