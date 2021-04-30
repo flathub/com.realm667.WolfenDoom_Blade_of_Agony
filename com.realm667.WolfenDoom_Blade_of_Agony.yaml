@@ -48,8 +48,7 @@ modules:
     url: https://raw.githubusercontent.com/Realm667/WolfenDoom/5ff5c4d416b4735e9355eca3130e3c2fd64078bc/dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop
     sha256: 57b1dbf9f9b7d26c6546dfd8fb956bbcff5287d737a9e9f6630b04271332b266
   - type: file
-    url: https://raw.githubusercontent.com/Realm667/WolfenDoom/5ff5c4d416b4735e9355eca3130e3c2fd64078bc/dist/com.realm667.WolfenDoom_Blade_of_Agony.appdata.xml
-    sha256: b6c873fc446c00622242ea8e5e50e6b6f3f4e3e18f8ba1bd33f1f901a477f538
+    path: com.realm667.WolfenDoom_Blade_of_Agony.appdata.xml
   - type: file
     path: m_doomxl-48x48.png # taken from https://github.com/Realm667/WolfenDoom/blob/master/graphics/general/m_doom.png
   - type: file
