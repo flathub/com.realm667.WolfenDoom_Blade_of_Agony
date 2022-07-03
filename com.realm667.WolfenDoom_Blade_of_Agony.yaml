@@ -1,7 +1,7 @@
 app-id: com.realm667.WolfenDoom_Blade_of_Agony
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: '18.08' # gzdoom 3.2 doesn't compile with the 20.08 runtime
+runtime-version: '21.08'
 command: gzdoom.sh
 rename-icon: m_doom
 finish-args:
@@ -27,8 +27,8 @@ modules:
   - "*"
   sources:
   - type: archive
-    url: https://github.com/jinfeihan57/p7zip/archive/v17.03.tar.gz
-    sha256: bb4b9b21584c0e076e0b4b2705af0dbe7ac19d378aa7f09a79da33a5b3293187
+    url: https://github.com/jinfeihan57/p7zip/archive/refs/tags/v17.04.tar.gz
+    sha256: ea029a2e21d2d6ad0a156f6679bd66836204aa78148a4c5e498fe682e77127ef
   - type: shell
     commands:
     - sed -i 's|/usr/local|/app|g' makefile.common
@@ -37,12 +37,12 @@ modules:
   buildsystem: simple
   sources:
   - type: archive
-    url: https://github.com/Realm667/WolfenDoom/archive/c2-release.tar.gz
-    sha256: c0e09acc18cf845188ca2796ded644fd38842c83275930efd60b63876d1f66f2
+    url: https://github.com/Realm667/WolfenDoom/archive/refs/tags/v3.1.tar.gz
+    sha256: 2f3e28506ef2e1ac35b95b51ad14313540dafd34e853fe4d29f1fcf02548329a
   - type: shell
     # 7z command taken from build.sh
     commands:
-    - 7z a -tzip -mmt=on -mm='Deflate' -mx=9 -ssc -xr@'tools/7zExcludeList.txt' -x@'tools/7zExcludeListDir.txt'
+    - 7z a -tzip -mmt=on -mm='Deflate' -mx=9 -ssc -xr@'tools/7za/7zExcludeList.txt' -x@'tools/7za/7zExcludeListDir.txt'
       boa_c2.pk3 *
   - type: file
     url: https://raw.githubusercontent.com/Realm667/WolfenDoom/5ff5c4d416b4735e9355eca3130e3c2fd64078bc/dist/com.realm667.WolfenDoom_Blade_of_Agony.desktop
@@ -69,11 +69,11 @@ modules:
   buildsystem: simple
   sources:
   - type: archive
-    url: https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip
-    sha256: 28a5eafbb1285b78937bd408fcdd8f25f915432340eee79da692eae83bce5e8a
+    url: https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedm-0.12.1.zip
+    sha256: e1318704f8440b6b83dcb523b769f02a4de214336713cffed830514c6f294514
   build-commands:
-  - install -Dm 644 freedoom2.wad /app/share/games/doom
-  
+  - install -Dm 644 freedm.wad /app/share/games/doom
+
 - name: fluidsynth # build dependency of gzdoom
   buildsystem: cmake-ninja
   config-opts:
@@ -81,18 +81,24 @@ modules:
   - -DLIB_SUFFIX=
   sources:
   - type: archive
-    url: https://github.com/FluidSynth/fluidsynth/archive/v2.1.6.tar.gz
-    sha256: 328fc290b5358544d8dea573f81cb1e97806bdf49e8507db067621242f3f0b8a
-
+    url: https://github.com/FluidSynth/fluidsynth/archive/refs/tags/v2.2.7.tar.gz
+    sha256: 460d86d8d687f567dc4780890b72538c7ff6b2082080ef2f9359d41670a309cf
+- name: zmusic
+  buildsystem: cmake-ninja
+  config-opts:
+  - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  sources:
+  - type: archive
+    url: https://github.com/coelckers/ZMusic/archive/refs/tags/1.1.9.tar.gz
+    sha256: 4bf39917028bbe2f382748b4400a1cbaeb8975157fe404cff53411297d6ac68c
 - name: gzdoom
   buildsystem: cmake-ninja
   config-opts:
   - -DCMAKE_BUILD_TYPE=RelWithDebInfo
   sources:
-  # WolfenDoom Chapter 2 requires gzdoom 3.2: https://www.realm667.com/index.php/en/forum-board/wolfendoom-blade-of-agony/1269-crashing-when-loading#7413
   - type: archive
-    url: https://github.com/coelckers/gzdoom/archive/g3.2.5.tar.gz
-    sha256: e9cf0aa5b7ee0b165532dee55e4965f6aabf1acadb79f7372f8e362540206748
+    url: https://github.com/coelckers/gzdoom/archive/refs/tags/g4.8.1.tar.gz
+    sha256: 6b48ed09e88200a29472fcaa2591d40ef783f4c66b2e3bee903d9799c5ea238d
   - type: shell
     commands:
     - install -Dm 644 soundfont/gzdoom.sf2 /app/share/sounds/sf2/gzdoom.sf2

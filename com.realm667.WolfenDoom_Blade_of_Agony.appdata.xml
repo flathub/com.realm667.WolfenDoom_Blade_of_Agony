@@ -71,6 +71,7 @@
 		</screenshot>
 	</screenshots>
 	<releases>
+		<release date="2021-07-10" version="3.1"/>
 		<release date="2017-06-08" version="2.0"/>
 		<release date="2016-11-12" version="1.0"/>
 		<release date="2016-10-12" version="0.95"/>
